@@ -20,7 +20,7 @@ A network scanner I built in Python to map out devices and open ports on a local
 ## Setup
 
 ```bash
-git clone https://github.com/ahmadsufean/netscout.git
+git clone https://github.com/iSedio/netscout.git
 cd netscout
 pip install -r requirements.txt
 ```
