@@ -2,6 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
+[![CI](https://github.com/iSeido/netscout/actions/workflows/ci.yml/badge.svg)](https://github.com/iSeido/netscout/actions/workflows/ci.yml)
 
 A network scanner built in Python to map out devices and open ports on a local network. Give it a subnet, it pings everything, then scans whatever responds.
 
