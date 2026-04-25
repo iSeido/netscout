@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A network scanner I built in Python to map out devices and open ports on a local network. You give it a subnet, it pings everything, then scans whatever responds.
+A network scanner built in Python to map out devices and open ports on a local network. Give it a subnet, it pings everything, then scans whatever responds.
 
 ![netscout demo](demo.png)
 
@@ -13,9 +13,9 @@ A network scanner I built in Python to map out devices and open ports on a local
 
 - Pings the whole subnet to find live devices
 - Scans ports to see what's open (SSH, HTTP, RDP, etc.)
-- Optionally grabs banners to identify what's actually running
+- Optionally grabs banners to identify what's running
 - Shows results in a clean terminal table
-- Can export to JSON or CSV if you need to save the output
+- Can export to JSON or CSV
 
 ---
 
@@ -65,17 +65,17 @@ python netscout.py 192.168.1.0/24 -o results.csv
 
 ### Flags
 
-| Flag | What it does | Default |
-|------|-------------|---------|
-| `-p` | Ports to scan — `80`, `22,80,443`, `1-1024` | — |
-| `--top-ports N` | Scan top 20, 50, or 100 common ports | `20` |
-| `--discover-only` | Ping sweep only, skip scanning | off |
-| `--banners` | Try to read service banners | off |
-| `--no-ping` | Skip discovery, scan host directly | off |
-| `--timeout SEC` | How long to wait per connection | `1.0` |
-| `--threads N` | Concurrent port scan threads | `100` |
-| `--show-closed` | Show closed ports too | off |
-| `-o FILE` | Export to `.json` or `.csv` | — |
+| Flag              | What it does                                   | Default |
+|-------------------|------------------------------------------------|---------|
+| `-p`              | Ports to scan — `80`, `22,80,443`, `1-1024`   | —       |
+| `--top-ports N`   | Scan top 20, 50, or 100 common ports           | `20`    |
+| `--discover-only` | Ping sweep only, skip scanning                 | off     |
+| `--banners`       | Try to read service banners                    | off     |
+| `--no-ping`       | Skip discovery, scan host directly             | off     |
+| `--timeout SEC`   | How long to wait per connection                | `1.0`   |
+| `--threads N`     | Concurrent port scan threads                   | `100`   |
+| `--show-closed`   | Show closed ports too                          | off     |
+| `-o FILE`         | Export to `.json` or `.csv`                    | —       |
 
 ---
 
