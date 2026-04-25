@@ -33,3 +33,18 @@ def test_out_of_range_filtered():
 def test_invalid_raises():
     with pytest.raises(ValueError):
         parse_ports("abc")
+
+
+def test_reversed_range_raises():
+    with pytest.raises(ValueError, match="Invalid range"):
+        parse_ports("100-1")
+
+
+def test_range_exceeds_max_raises():
+    with pytest.raises(ValueError, match="Invalid range"):
+        parse_ports("1-100000")
+
+
+def test_range_below_min_raises():
+    with pytest.raises(ValueError, match="Invalid range"):
+        parse_ports("0-5")

@@ -3,6 +3,7 @@
 import platform
 import subprocess
 import ipaddress
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
@@ -12,7 +13,7 @@ def _ping(host: str, timeout_ms: int = 1000) -> bool:
     if system == "windows":
         cmd = ["ping", "-n", "1", "-w", str(timeout_ms), host]
     else:
-        cmd = ["ping", "-c", "1", "-W", str(timeout_ms // 1000 or 1), host]
+        cmd = ["ping", "-c", "1", "-W", str(max(1, round(timeout_ms / 1000))), host]
 
     try:
         result = subprocess.run(
@@ -61,8 +62,8 @@ def discover_hosts(
             try:
                 if future.result():
                     live.append(ip)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[discovery] ping {ip}: {e}", file=sys.stderr)
 
     live.sort(key=lambda ip: tuple(int(p) for p in ip.split(".")))
     return live

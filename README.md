@@ -74,6 +74,7 @@ python netscout.py 192.168.1.0/24 -o results.csv
 | `--no-ping`       | Skip discovery, scan host directly             | off     |
 | `--timeout SEC`   | How long to wait per connection                | `1.0`   |
 | `--threads N`     | Concurrent port scan threads                   | `100`   |
+| `--host-threads N`| Concurrent host-scan threads                   | `10`    |
 | `--show-closed`   | Show closed ports too                          | off     |
 | `-o FILE`         | Export to `.json` or `.csv`                    | —       |
 
@@ -131,6 +132,22 @@ Install dev dependencies and run pytest:
 pip install -r requirements-dev.txt
 pytest tests/
 ```
+
+---
+
+## Why I built this
+
+I wanted a simple, dependency-light tool to quickly map what's alive on a home or small-office network without installing Nmap or learning its syntax. Python's standard library handles everything — sockets, threading, subprocess pings — so the only third-party dependency is `rich` for the terminal output. It's also a practical exercise in concurrent I/O and CLI design.
+
+---
+
+## Roadmap
+
+- ARP discovery — find hosts that block ICMP by sniffing ARP traffic (requires raw socket or `scapy`)
+- MAC vendor lookup — resolve OUI prefix to manufacturer name from a local database
+- UDP scanning — detect common UDP services (DNS 53, SNMP 161, TFTP 69)
+- OS fingerprinting — infer OS from TTL and TCP window size
+- HTML report export — single-file report with sortable tables
 
 ---
 

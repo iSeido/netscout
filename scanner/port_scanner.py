@@ -1,11 +1,25 @@
 """Threaded TCP port scanner."""
 
+import errno
 import socket
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
 from scanner.service_info import get_service_name
 from scanner.banner import grab_banner
+
+_REFUSED: set[int] = {errno.ECONNREFUSED}
+_FILTERED: set[int] = set()
+for _name in ("ETIMEDOUT", "EHOSTUNREACH", "ENETUNREACH"):
+    if (_v := getattr(errno, _name, None)) is not None:
+        _FILTERED.add(_v)
+for _name in ("WSAECONNREFUSED",):
+    if (_v := getattr(errno, _name, None)) is not None:
+        _REFUSED.add(_v)
+for _name in ("WSAETIMEDOUT", "WSAEHOSTUNREACH", "WSAENETUNREACH"):
+    if (_v := getattr(errno, _name, None)) is not None:
+        _FILTERED.add(_v)
 
 
 @dataclass
@@ -30,8 +44,15 @@ def _scan_port(host: str, port: int, timeout: float, grab: bool) -> PortResult:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(timeout)
     try:
-        result = sock.connect_ex((host, port))
-        state = "open" if result == 0 else "closed"
+        err = sock.connect_ex((host, port))
+        if err == 0:
+            state = "open"
+        elif err in _REFUSED:
+            state = "closed"
+        elif err in _FILTERED:
+            state = "filtered"
+        else:
+            state = "closed"
     except socket.timeout:
         state = "filtered"
     except OSError:
@@ -75,8 +96,8 @@ def scan_host(
                 progress_callback(completed, total)
             try:
                 result.ports.append(future.result())
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[port_scanner] port {futures[future]} on {ip}: {e}", file=sys.stderr)
 
     result.ports.sort(key=lambda p: p.port)
     return result
@@ -107,8 +128,8 @@ def scan_network(
                 progress_callback(completed, total)
             try:
                 results.append(future.result())
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[port_scanner] host {futures[future]}: {e}", file=sys.stderr)
 
     results.sort(key=lambda r: tuple(int(p) for p in r.ip.split(".")))
     return results
@@ -124,8 +145,13 @@ def parse_ports(port_spec: str) -> list[int]:
     for token in port_spec.split(","):
         token = token.strip()
         if "-" in token:
-            start, _, end = token.partition("-")
-            ports.update(range(int(start), int(end) + 1))
+            start_s, _, end_s = token.partition("-")
+            start, end = int(start_s), int(end_s)
+            if start > end:
+                raise ValueError(f"Invalid range '{token}': start {start} > end {end}")
+            if start < 1 or end > 65535:
+                raise ValueError(f"Invalid range '{token}': ports must be 1–65535")
+            ports.update(range(start, end + 1))
         else:
             ports.add(int(token))
     return sorted(p for p in ports if 1 <= p <= 65535)

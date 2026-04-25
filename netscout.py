@@ -104,6 +104,13 @@ examples:
         help="max concurrent ping threads for discovery [default: 50]",
     )
     parser.add_argument(
+        "--host-threads",
+        type=int,
+        default=10,
+        metavar="N",
+        help="max concurrent host-scan threads [default: 10]",
+    )
+    parser.add_argument(
         "--no-ping",
         action="store_true",
         help="skip host discovery — scan target directly (useful for single IPs)",
@@ -202,6 +209,7 @@ def main() -> int:
             live_hosts,
             ports,
             port_workers=args.threads,
+            host_workers=args.host_threads,
             timeout=args.timeout,
             grab_banners=args.banners,
             progress_callback=scan_progress,
