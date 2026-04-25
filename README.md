@@ -5,6 +5,8 @@
 
 A network scanner I built in Python to map out devices and open ports on a local network. You give it a subnet, it pings everything, then scans whatever responds.
 
+![netscout demo](demo.png)
+
 ---
 
 ## What it does
