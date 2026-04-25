@@ -24,7 +24,13 @@ A network scanner I built in Python to map out devices and open ports on a local
 ```bash
 git clone https://github.com/iSedio/netscout.git
 cd netscout
-pip install -r requirements.txt
+pip install -e .
+```
+
+This installs netscout as a command in your environment. Verify it works:
+
+```bash
+netscout --help
 ```
 
 Only one dependency: `rich` (for the terminal output). Everything else is built into Python.
@@ -73,6 +79,33 @@ python netscout.py 192.168.1.0/24 -o results.csv
 
 ---
 
+## Usage Examples
+
+```bash
+# Show help
+python netscout.py --help
+
+# Discover hosts only (no port scan)
+python netscout.py 192.168.1.0/24 --discover-only
+
+# Scan top 50 common ports
+python netscout.py 192.168.1.0/24 --top-ports 50
+
+# Scan custom ports
+python netscout.py 192.168.1.0/24 -p 22,80,443,3389
+
+# Enable banner grabbing
+python netscout.py 192.168.1.0/24 --banners
+
+# Export results to JSON
+python netscout.py 192.168.1.0/24 -o results.json
+
+# Export results to CSV
+python netscout.py 192.168.1.0/24 -o results.csv
+```
+
+---
+
 ## Project layout
 
 ```
@@ -90,9 +123,29 @@ netscout/
 
 ---
 
-## Note
+## Running Tests
 
-Only run this on networks you own or have permission to scan.
+Install dev dependencies and run pytest:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/
+```
+
+---
+
+## Safety and Limitations
+
+- **Authorized use only.** This tool is for educational purposes and networks you own or have explicit permission to test. Scanning unauthorized networks may be illegal.
+- **ICMP dependency.** Host discovery relies on ping. Devices that block ICMP will not appear in results.
+- **Not a Nmap replacement.** netscout covers common use cases but lacks the depth, accuracy, and feature set of Nmap.
+- **Results may vary.** Firewalls, network segmentation, and OS-level filtering can affect scan accuracy and completeness.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
