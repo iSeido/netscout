@@ -167,4 +167,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-Made by [Ahmed Maghrabi](https://github.com/ahmadsufean)
+Made by [Ahmed Maghrabi](https://github.com/iSeido)
